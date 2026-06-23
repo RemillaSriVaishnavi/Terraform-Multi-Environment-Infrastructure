@@ -1,0 +1,29 @@
+name: Production Deployment
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    environment:
+      name: production
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Select Production Workspace
+        run: |
+          terraform workspace select production
+
+      - name: Terraform Apply
+        run: |
+          terraform apply \
+          -auto-approve \
+          -var-file=environments/production.tfvars
