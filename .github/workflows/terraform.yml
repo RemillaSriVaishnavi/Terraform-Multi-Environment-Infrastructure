@@ -1,9 +1,15 @@
 name: Terraform CI/CD
 
 on:
+  push:
+    branches:
+      - main
+
   pull_request:
     branches:
       - main
+
+  workflow_dispatch:
 
 jobs:
   terraform:
@@ -13,9 +19,11 @@ jobs:
       INFRACOST_API_KEY: ${{ secrets.INFRACOST_API_KEY }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: hashicorp/setup-terraform@v3
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
         run: terraform init
@@ -32,5 +40,5 @@ jobs:
       - name: Generate Cost Estimate
         run: |
           infracost breakdown \
-          --path . \
-          --format table
+            --path . \
+            --format table
